@@ -41,6 +41,14 @@ module.exports = {
       phone: {
         type: Sequelize.STRING
       },
+      discountCode: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
+      discount: {
+        allowNull: true,
+        type: Sequelize.DOUBLE
+      },
       logo: {
         type: Sequelize.STRING
       },

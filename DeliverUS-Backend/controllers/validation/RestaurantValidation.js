@@ -1,6 +1,20 @@
 const { check } = require('express-validator')
 const { checkFileIsImage, checkFileMaxSize } = require('./FileValidationHelper')
 const maxFileSize = 2000000 // around 2Mb
+const { Restaurant } = require('../../models')
+
+const checkCodeMismoPropExists = async (value, { req }) => {
+  try {
+    const restaurantCodigo = await Restaurant.findOne({
+      where: { codigo: value }
+    })
+    if (restaurantCodigo === null) {
+      return Promise.resolve()
+    } else { Promise.reject(new Error('No puedes utilizar el mismo codigo de otro restaurante tuyo.')) }
+  } catch (err) {
+    return Promise.reject(new Error(err))
+  }
+}
 
 module.exports = {
   create: [
@@ -13,6 +27,9 @@ module.exports = {
     check('email').optional({ nullable: true, checkFalsy: true }).isString().isEmail().trim(),
     check('phone').optional({ nullable: true, checkFalsy: true }).isString().isLength({ min: 1, max: 255 }).trim(),
     check('restaurantCategoryId').exists({ checkNull: true }).isInt({ min: 1 }).toInt(),
+    check('codigo').optional({ nullable: true, checkFalsy: true }).isString().isLength({ min: 1, max: 10 }).trim(),
+    check('porcentajeDiscount').optional({ nullable: true, checkFalsy: true }).isInt({ min: 1, max: 99 }).toInt(),
+    check('codigo').custom(checkCodeMismoPropExists),
     check('userId').not().exists(),
     check('heroImage').custom((value, { req }) => {
       return checkFileIsImage(req, 'heroImage')

@@ -28,14 +28,18 @@ export default function RestaurantsScreen ({ navigation, route }) {
 
   const renderRestaurant = ({ item }) => {
     return (
+
       <ImageCard
         imageUri={item.logo ? { uri: process.env.API_BASE_URL + '/' + item.logo } : restaurantLogo}
-        title={item.name}
+        title={renderCardTitle(item)}
+
         onPress={() => {
           navigation.navigate('RestaurantDetailScreen', { id: item.id })
         }}
       >
+
         <TextRegular numberOfLines={2}>{item.description}</TextRegular>
+
         {item.averageServiceMinutes !== null &&
           <TextSemiBold>Avg. service time: <TextSemiBold textStyle={{ color: GlobalStyles.brandPrimary }}>{item.averageServiceMinutes} min.</TextSemiBold></TextSemiBold>
         }
@@ -81,7 +85,12 @@ export default function RestaurantsScreen ({ navigation, route }) {
       </ImageCard>
     )
   }
-
+  const renderCardTitle = (item) => {
+    return (<>
+        <TextSemiBold style={{ fontSize: 15 }}>{item.name}</TextSemiBold>
+        {(item.discountCode && item.discount) && <TextSemiBold style={{ marginLeft: 5, fontSize: 15, color: GlobalStyles.brandPrimary }}>({item.discount}% of discount using the code {item.discountCode})</TextSemiBold>}
+      </>)
+  }
   const renderEmptyRestaurantsList = () => {
     return (
       <TextRegular textStyle={styles.emptyList}>
@@ -178,6 +187,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
+
   button: {
     borderRadius: 8,
     height: 40,
