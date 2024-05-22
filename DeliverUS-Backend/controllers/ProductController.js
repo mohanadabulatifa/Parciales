@@ -23,8 +23,10 @@ exports.indexRestaurant = async function (req, res) {
 
 exports.show = async function (req, res) {
   // Only returns PUBLIC information of products
+
   try {
     const product = await Product.findByPk(req.params.productId, {
+
       include: [
         {
           model: ProductCategory,
@@ -46,6 +48,26 @@ exports.create = async function (req, res) {
   try {
     newProduct = await newProduct.save()
     res.json(newProduct)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+}
+
+exports.promoteDemote = async function (req, res) {
+  try {
+    const product = await Product.findOne({ where: { id: req.params.productId } })
+
+    if (product !== null) {
+      if (product.promote) {
+        product.promote = false
+      } else {
+        product.promote = true
+      }
+      await product.save()
+      res.json(product)
+    } else {
+      res.status(404).send('No encontre el producto')
+    }
   } catch (err) {
     res.status(500).send(err)
   }

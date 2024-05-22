@@ -25,6 +25,11 @@ module.exports = {
       order: {
         type: Sequelize.INTEGER
       },
+      promote: {
+        allowNull: true,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       availability: {
         type: Sequelize.BOOLEAN
       },

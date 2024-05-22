@@ -55,4 +55,12 @@ module.exports = (options) => {
       middlewares.checkProductOwnership,
       ProductController.destroy
     )
+  app.route('/products/:productId/promote')
+    .patch(
+      middlewares.isLoggedIn,
+      middlewares.hasRole('owner'),
+      middlewares.checkEntityExists(Product, 'productId'),
+      middlewares.checkProductOwnership,
+      ProductController.promoteDemote
+    )
 }

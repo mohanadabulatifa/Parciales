@@ -4,7 +4,7 @@ import { StyleSheet, View, FlatList, ImageBackground, Image, Pressable } from 'r
 import { showMessage } from 'react-native-flash-message'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { getDetail } from '../../api/RestaurantEndpoints'
-import { remove } from '../../api/ProductEndpoints'
+import { remove, promote } from '../../api/ProductEndpoints'
 import ImageCard from '../../components/ImageCard'
 import TextRegular from '../../components/TextRegular'
 import TextSemiBold from '../../components/TextSemibold'
@@ -58,14 +58,48 @@ export default function RestaurantDetailScreen ({ navigation, route }) {
     return (
       <ImageCard
         imageUri={item.image ? { uri: process.env.API_BASE_URL + '/' + item.image } : defaultProductImage}
-        title={item.name}
+        title={(
+          <View style = {styles.productDetailsContainer}>
+            <TextRegular style= {styles.title}>{item.name}</TextRegular>
+
+            { item.promote && <TextRegular textStyle = {styles.priceOff} numberOfLines={2}>({restaurant.promocion} % off)</TextRegular>}</View>)}
       >
+
         <TextRegular numberOfLines={2}>{item.description}</TextRegular>
-        <TextSemiBold textStyle={styles.price}>{item.price.toFixed(2)}€</TextSemiBold>
+
+        <View style = {styles.productDetailsContainer}>
+
+        <TextSemiBold textStyle={styles.price}>{item.price.toFixed(2)}€ </TextSemiBold>
+        {item.promote &&
+          <TextRegular textStyle={styles.priceOff }> Price promoted: { item.price - (item.price * (restaurant.promocion) / 100)}€</TextRegular>
+        }
+        </View>
         {!item.availability &&
           <TextRegular textStyle={styles.availability }>Not available</TextRegular>
         }
          <View style={styles.actionButtonsContainer}>
+         {restaurant.promocion > 0 && <Pressable
+            onPress={() => promoteProduct(item)}
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed
+                  ? GlobalStyles.brandGreenTap
+                  : GlobalStyles.brandGreen
+              },
+              styles.actionButton
+            ]}>
+          <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
+           {!item.promote && <> <MaterialCommunityIcons name='star-outline' color={'white'} size={20}/>
+            <TextRegular textStyle={styles.text}>
+              Promote
+            </TextRegular></>}
+            {item.promote && <> <MaterialCommunityIcons name='star' color={'white'} size={20}/>
+            <TextRegular textStyle={styles.text}>
+              Demote
+            </TextRegular></>}
+          </View>
+        </Pressable>}
+
           <Pressable
             onPress={() => navigation.navigate('EditProductScreen', { id: item.id })
             }
@@ -102,6 +136,7 @@ export default function RestaurantDetailScreen ({ navigation, route }) {
             </TextRegular>
           </View>
         </Pressable>
+
         </View>
       </ImageCard>
     )
@@ -151,6 +186,26 @@ export default function RestaurantDetailScreen ({ navigation, route }) {
       })
     }
   }
+  const promoteProduct = async (product) => {
+    try {
+      await promote(product.id)
+      await fetchRestaurantDetail()
+      showMessage({
+        message: `Product ${product.name} succesfully promoted`,
+        type: 'success',
+        style: GlobalStyles.flashStyle,
+        titleStyle: GlobalStyles.flashTextStyle
+      })
+    } catch (error) {
+      console.log(error)
+      showMessage({
+        message: `Product ${product.name} could not be promoted.`,
+        type: 'error',
+        style: GlobalStyles.flashStyle,
+        titleStyle: GlobalStyles.flashTextStyle
+      })
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -175,6 +230,10 @@ export default function RestaurantDetailScreen ({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  productDetailsContainer: {
+    flexDirection: 'row',
+    marginBottom: 10
   },
   row: {
     padding: 15,
@@ -224,6 +283,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginLeft: 5
   },
+  priceOff: {
+    fontSize: 16,
+    color: 'red',
+    alignSelf: 'center',
+    marginLeft: 5
+  },
   availability: {
     textAlign: 'right',
     marginRight: 5,
@@ -241,8 +306,8 @@ const styles = StyleSheet.create({
   },
   actionButtonsContainer: {
     flexDirection: 'row',
-    bottom: 5,
+    bottom: 10,
     position: 'absolute',
-    width: '90%'
+    width: '50%'
   }
 })

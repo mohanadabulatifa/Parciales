@@ -30,6 +30,7 @@ module.exports = {
     check('codigo').optional({ nullable: true, checkFalsy: true }).isString().isLength({ min: 1, max: 10 }).trim(),
     check('porcentajeDiscount').optional({ nullable: true, checkFalsy: true }).isInt({ min: 1, max: 99 }).toInt(),
     check('codigo').custom(checkCodeMismoPropExists),
+    check('promocion').optional({ nullable: true, checkFalsy: true }).isFloat({ min: 0, max: 100 }).toFloat,
     check('userId').not().exists(),
     check('heroImage').custom((value, { req }) => {
       return checkFileIsImage(req, 'heroImage')
@@ -53,6 +54,7 @@ module.exports = {
     check('shippingCosts').exists().isFloat({ min: 0 }).toFloat(),
     check('email').optional({ nullable: true, checkFalsy: true }).isString().isEmail().trim(),
     check('phone').optional({ nullable: true, checkFalsy: true }).isString().isLength({ min: 1, max: 255 }).trim(),
+    check('promocion').optional({ nullable: true, checkFalsy: true }).isFloat({ min: 0, max: 100 }).toFloat,
     check('restaurantCategoryId').exists({ checkNull: true }).isInt({ min: 1 }).toInt(),
     check('userId').not().exists(),
     check('heroImage').custom((value, { req }) => {

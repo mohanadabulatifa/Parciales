@@ -24,6 +24,7 @@ module.exports = {
     check('productCategoryId').exists().isInt({ min: 1 }).toInt(),
     check('restaurantId').exists().isInt({ min: 1 }).toInt(),
     check('restaurantId').custom(checkRestaurantExists),
+    check('promote').optional().isBoolean().toBoolean(),
     check('image').custom((value, { req }) => {
       return checkFileIsImage(req, 'image')
     }).withMessage('Please upload an image with format (jpeg, png).'),
@@ -40,6 +41,7 @@ module.exports = {
     check('availability').optional().isBoolean().toBoolean(),
     check('productCategoryId').exists().isInt({ min: 1 }).toInt(),
     check('restaurantId').not().exists(),
+    check('promote').optional().isBoolean().toBoolean(),
     check('image').custom((value, { req }) => {
       return checkFileIsImage(req, 'image')
     }).withMessage('Please upload an image with format (jpeg, png).'),
@@ -48,4 +50,5 @@ module.exports = {
     }).withMessage('Maximum file size of ' + maxFileSize / 1000000 + 'MB'),
     check('restaurantId').not().exists()
   ]
+
 }

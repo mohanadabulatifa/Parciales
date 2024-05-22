@@ -42,6 +42,11 @@ module.exports = (sequelize, DataTypes) => {
     logo: DataTypes.STRING,
     discountCode: DataTypes.STRING,
     discount: DataTypes.INTEGER,
+    promocion: {
+      allowNull: false,
+      type: DataTypes.DOUBLE,
+      defaultValue: 0.0
+    },
     heroImage: DataTypes.STRING,
     status: {
       type: DataTypes.ENUM,

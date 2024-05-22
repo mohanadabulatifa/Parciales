@@ -49,6 +49,17 @@ module.exports = {
         allowNull: true,
         type: Sequelize.DOUBLE
       },
+
+      promocionado: {
+        allowNull: true,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      promocion: {
+        allowNull: true,
+        type: Sequelize.DOUBLE,
+        defaultValue: 0.0
+      },
       logo: {
         type: Sequelize.STRING
       },
