@@ -84,7 +84,7 @@ export default function CreateRestaurantScreen ({ navigation, route }) {
       }
     }
     fetchRestaurantCategories()
-  }, [route])
+  }, [restaurantCategories])
 
   useEffect(() => {
     (async () => {

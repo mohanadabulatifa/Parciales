@@ -195,7 +195,7 @@ export default function EditRestaurantScreen ({ navigation, route }) {
               />
                <InputItem
                 name='promocion'
-                label='promocion:'
+                label='Promocion:'
               />
 
               <DropDownPicker

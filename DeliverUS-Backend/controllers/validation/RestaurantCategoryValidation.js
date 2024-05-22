@@ -5,7 +5,7 @@ const { RestaurantCategory } = require('../../models')
 const checkRestaurantCategoryNotExists = async (value, { req }) => {
   try {
     const restaurantCategory = await RestaurantCategory.findOne({
-      where: { name: value }
+      where: { name: req.body.name }
     })
     if (restaurantCategory === null) {
       return Promise.resolve()
