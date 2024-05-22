@@ -14,7 +14,7 @@ import { showMessage } from 'react-native-flash-message'
 import { ErrorMessage, Formik } from 'formik'
 import TextError from '../../components/TextError'
 
-export default function CreateRestaurantScreen ({ navigation }) {
+export default function CreateRestaurantScreen ({ navigation, route }) {
   const [open, setOpen] = useState(false)
   const [restaurantCategories, setRestaurantCategories] = useState([])
   const [backendErrors, setBackendErrors] = useState()
@@ -77,7 +77,7 @@ export default function CreateRestaurantScreen ({ navigation }) {
       }
     }
     fetchRestaurantCategories()
-  }, [])
+  }, [route])
 
   useEffect(() => {
     (async () => {
@@ -177,6 +177,26 @@ export default function CreateRestaurantScreen ({ navigation }) {
                 dropDownStyle={{ backgroundColor: '#fafafa' }}
               />
               <ErrorMessage name={'restaurantCategoryId'} render={msg => <TextError>{msg}</TextError> }/>
+              <View style={styles.actionButtonsContainer}>
+              <Pressable
+                onPress={() => navigation.navigate('CreateRestaurantCategoryScreen')
+                }
+                style={({ pressed }) => [
+                  {
+                    backgroundColor: pressed
+                      ? GlobalStyles.brandGreenTap
+                      : GlobalStyles.brandGreen
+                  },
+                  styles.actionButton
+                ]}>
+              <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
+              <MaterialCommunityIcons name='folder-plus-outline' color={'white'} size={20} />
+                <TextRegular textStyle={styles.text}>
+                  New Category
+                </TextRegular>
+              </View>
+            </Pressable>
+            </View>
 
               <Pressable onPress={() =>
                 pickImage(
@@ -260,5 +280,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignSelf: 'center',
     marginTop: 5
+  },
+  actionButton: {
+    borderRadius: 8,
+    height: 40,
+    marginTop: 30,
+    margin: '1%',
+    padding: 10,
+    alignSelf: 'center',
+    flexDirection: 'column',
+    width: '100%'
   }
 })
